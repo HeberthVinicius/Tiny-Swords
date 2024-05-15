@@ -1,0 +1,13 @@
+# Godot 4+ specific ignores
+.godot/
+
+#godot-specific ignores
+.import/
+export.cfg
+export_presets.cfg
+
+# Imported translations
+*.translation
+
+#plugins
+/addons/Todo_Manager/
