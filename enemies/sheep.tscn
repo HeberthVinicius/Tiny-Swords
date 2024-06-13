@@ -1,0 +1,82 @@
+[gd_scene load_steps=13 format=3 uid="uid://b7l4s78624oad"]
+
+[ext_resource type="Script" path="res://enemies/enemy.gd" id="1_7vp4d"]
+[ext_resource type="PackedScene" uid="uid://dakwtduwu5n6n" path="res://common/skull.tscn" id="2_evwb7"]
+[ext_resource type="Texture2D" uid="uid://davy8xv6y5u8h" path="res://addons/Tiny Swords/Resources/Sheep/HappySheep_Bouncing.png" id="3_khc07"]
+[ext_resource type="Script" path="res://enemies/behaviors/follow_player.gd" id="4_7med8"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1qi4j"]
+atlas = ExtResource("3_khc07")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_36fct"]
+atlas = ExtResource("3_khc07")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8qeco"]
+atlas = ExtResource("3_khc07")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dougb"]
+atlas = ExtResource("3_khc07")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3vqpb"]
+atlas = ExtResource("3_khc07")
+region = Rect2(512, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hx6oy"]
+atlas = ExtResource("3_khc07")
+region = Rect2(640, 0, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_goa66"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1qi4j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_36fct")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8qeco")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dougb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3vqpb")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hx6oy")
+}],
+"loop": true,
+"name": &"walking",
+"speed": 10.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_a8wty"]
+radius = 19.0
+height = 48.0
+
+[node name="Sheep" type="CharacterBody2D" groups=["enemies"]]
+motion_mode = 1
+script = ExtResource("1_7vp4d")
+health = 1
+death_prefab = ExtResource("2_evwb7")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -17)
+sprite_frames = SubResource("SpriteFrames_goa66")
+animation = &"walking"
+autoplay = "walking"
+frame_progress = 0.595012
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -20)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_a8wty")
+
+[node name="FollowPlayer" type="Node" parent="."]
+script = ExtResource("4_7med8")
+speed = 1.8

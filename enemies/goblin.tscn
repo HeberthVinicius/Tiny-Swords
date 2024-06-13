@@ -1,0 +1,81 @@
+[gd_scene load_steps=13 format=3 uid="uid://dt610w8hon0jp"]
+
+[ext_resource type="Script" path="res://enemies/enemy.gd" id="1_tfsgo"]
+[ext_resource type="PackedScene" uid="uid://dakwtduwu5n6n" path="res://common/skull.tscn" id="2_l3emc"]
+[ext_resource type="Texture2D" uid="uid://bx74b665n2qg7" path="res://addons/Tiny Swords/Factions/Goblins/Troops/Torch/Yellow/Torch_Yellow.png" id="3_skvo7"]
+[ext_resource type="Script" path="res://enemies/behaviors/follow_player.gd" id="4_3wed3"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tl1mu"]
+atlas = ExtResource("3_skvo7")
+region = Rect2(0, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tnbal"]
+atlas = ExtResource("3_skvo7")
+region = Rect2(192, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6katd"]
+atlas = ExtResource("3_skvo7")
+region = Rect2(384, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6k8fj"]
+atlas = ExtResource("3_skvo7")
+region = Rect2(576, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v26ap"]
+atlas = ExtResource("3_skvo7")
+region = Rect2(768, 192, 192, 192)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6s1sj"]
+atlas = ExtResource("3_skvo7")
+region = Rect2(960, 192, 192, 192)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_goa66"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tl1mu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tnbal")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6katd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6k8fj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v26ap")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6s1sj")
+}],
+"loop": true,
+"name": &"walking",
+"speed": 10.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_3q0t7"]
+radius = 29.0
+height = 66.0
+
+[node name="Goblin" type="CharacterBody2D" groups=["enemies"]]
+motion_mode = 1
+script = ExtResource("1_tfsgo")
+health = 20
+death_prefab = ExtResource("2_l3emc")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -33)
+sprite_frames = SubResource("SpriteFrames_goa66")
+animation = &"walking"
+autoplay = "walking"
+frame_progress = 0.523768
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -33)
+shape = SubResource("CapsuleShape2D_3q0t7")
+
+[node name="FollowPlayer" type="Node" parent="."]
+script = ExtResource("4_3wed3")
+speed = 0.4
