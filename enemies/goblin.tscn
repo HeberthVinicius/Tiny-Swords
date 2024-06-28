@@ -1,9 +1,12 @@
-[gd_scene load_steps=13 format=3 uid="uid://dt610w8hon0jp"]
+[gd_scene load_steps=16 format=3 uid="uid://dt610w8hon0jp"]
 
 [ext_resource type="Script" path="res://enemies/enemy.gd" id="1_tfsgo"]
 [ext_resource type="PackedScene" uid="uid://dakwtduwu5n6n" path="res://common/skull.tscn" id="2_l3emc"]
+[ext_resource type="PackedScene" uid="uid://cetnylnxiacdi" path="res://common/meat.tscn" id="3_0p0bg"]
+[ext_resource type="PackedScene" uid="uid://bsboivf1sqhci" path="res://common/golden_meat.tscn" id="3_r3lxf"]
 [ext_resource type="Texture2D" uid="uid://bx74b665n2qg7" path="res://addons/Tiny Swords/Factions/Goblins/Troops/Torch/Yellow/Torch_Yellow.png" id="3_skvo7"]
 [ext_resource type="Script" path="res://enemies/behaviors/follow_player.gd" id="4_3wed3"]
+[ext_resource type="PackedScene" uid="uid://xy35akftx4rk" path="res://common/gold.tscn" id="5_rmst8"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_tl1mu"]
 atlas = ExtResource("3_skvo7")
@@ -56,26 +59,33 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_3q0t7"]
-radius = 29.0
-height = 66.0
+radius = 8.99992
+height = 35.9911
 
 [node name="Goblin" type="CharacterBody2D" groups=["enemies"]]
 motion_mode = 1
 script = ExtResource("1_tfsgo")
 health = 20
 death_prefab = ExtResource("2_l3emc")
+drop_rate = 0.2
+drop_items = Array[PackedScene]([ExtResource("3_0p0bg"), ExtResource("3_r3lxf"), ExtResource("5_rmst8")])
+drop_rates = Array[float]([0.8, 0.03, 0.07])
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(0, -33)
+position = Vector2(0, -30)
 sprite_frames = SubResource("SpriteFrames_goa66")
 animation = &"walking"
 autoplay = "walking"
 frame_progress = 0.523768
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -33)
+position = Vector2(0, -6)
+rotation = -1.57227
 shape = SubResource("CapsuleShape2D_3q0t7")
 
 [node name="FollowPlayer" type="Node" parent="."]
 script = ExtResource("4_3wed3")
 speed = 0.4
+
+[node name="DamageDigitMarker" type="Marker2D" parent="."]
+position = Vector2(0, -69)

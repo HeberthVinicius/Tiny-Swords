@@ -1,27 +1,36 @@
 class_name Player
 extends CharacterBody2D
 
+
+signal meat_collected(value: int)
+signal gold_collected(value: int)
+
+
 @export_category("Movement")
 @export var speed: float = 3
-
 @export_category("Sword")
 @export var sword_damage = 4
-
 @export_category("Spell")
 @export var spell_damage: int = 7
 @export var spell_interval: float = 15.0
 @export var spell_prefab: PackedScene
-
 @export_category("Life")
 @export var health: int = 50
 @export var max_health: int = 50
 @export var death_prefab: PackedScene
 
+
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var sword_area: Area2D = $SwordArea
 @onready var hit_box_area: Area2D = $HitBoxArea
+@onready var health_progress_bar: ProgressBar = $HealthProgressBar
 
+
+enum Direction { UP, DOWN, LEFT, RIGHT, NONE }
+
+
+var movement_direction = Direction.NONE
 var input_vector: Vector2 = Vector2(0,0)
 var is_running: bool = false
 var was_running: bool = false
@@ -31,15 +40,26 @@ var hit_box_cooldown: float = 0.0
 var spell_cooldown: float = 0.0
 
 
+func _ready() -> void:
+	GameManager.player = self
+	meat_collected.connect(
+		func(value: int): 
+			GameManager.meat_counter += 1
+	)
+	gold_collected.connect(
+		func(value: int): 
+			GameManager.gold_counter += 1
+	)
+
 func _process(delta: float) -> void:
-	GameManeger.player_position = position
+	GameManager.player_position = position
 	#Read Input
 	get_input()
 	#Process attack and cooldown
 	update_attack_cooldown(delta)
 
 	if Input.is_action_just_pressed("attack"):
-		attack()
+		performe_attack()
 	
 	#Process animation and rotation of sprite
 	play_run_idle_animation()
@@ -51,6 +71,10 @@ func _process(delta: float) -> void:
 	
 	#Process Spell
 	update_spell(delta)
+
+	#Process Health
+	update_health_progress_bar()
+
 
 func _physics_process(_delta: float) -> void:
 	#Modify velocity
@@ -80,16 +104,32 @@ func update_spell(delta: float) -> void:
 	spell_cooldown = spell_interval
 	
 	#Cast the spell
-	var spell = spell_prefab.instantiate()
-	spell.damage_amount = spell_damage
-	add_child(spell)
+	if GameManager.enemies_defeated_counter >= 10:
+		var spell = spell_prefab.instantiate()
+		spell.damage_amount = spell_damage
+		add_child(spell)
+
 
 func get_input() -> void:
 	#Get input_vector
 	input_vector = Input.get_vector("move_left", "move_right", "move_up",
-	 "move_down")	
+	 "move_down")
+	
+	#Detemine the direction based on input vector
+	if input_vector.y < 0:
+		movement_direction = Direction.UP
+	elif input_vector.y > 0:
+		movement_direction = Direction.DOWN
+	elif input_vector.x < 0:
+		movement_direction = Direction.LEFT
+	elif input_vector.x > 0:
+		movement_direction = Direction.RIGHT
+	else:
+		movement_direction = Direction.NONE
+		
 	#Delete dead_zone from input_vector
 	var dead_zone: float = 0.15
+	
 	
 	if abs(input_vector.x) < dead_zone:
 		input_vector.x = 0.0
@@ -120,13 +160,45 @@ func rotate_sprite() -> void:
 		sprite.flip_h = true
 
 
-func attack() -> void:
+func performe_attack() -> void:
 	if is_attacking:
 		return
+
 	#Play attack animation
-	animation_player.play("attack_side_1")
+	match movement_direction:
+		Direction.UP:
+			attack_up()
+		Direction.DOWN:
+			attack_down()
+		Direction.LEFT:
+			attack_left()
+		Direction.RIGHT:
+			attack_right()
+		Direction.NONE:
+			attack_default()
+
 	attack_cooldown = 0.6
 	is_attacking = true
+
+
+func attack_up():
+	animation_player.play("attack_up_1")
+
+
+func attack_down():
+	animation_player.play("attack_down_1")
+
+
+func attack_left():
+	animation_player.play("attack_side_2")
+
+
+func attack_right():
+	animation_player.play("attack_side_2")
+
+
+func attack_default():
+	animation_player.play("attack_side_1")
 
 
 func deal_demage_to_enemies() -> void:
@@ -159,7 +231,7 @@ func update_hitbox_detection(delta: float) ->void:
 	var bodies = hit_box_area.get_overlapping_bodies()
 	for body in bodies:
 		if body.is_in_group("enemies"):
-			var Enemy = body
+			#var enemy: Enemy = body
 			var damage_amount = 1
 			damage(damage_amount)
 
@@ -169,7 +241,7 @@ func damage(amount: int) -> void:
 		return
 		
 	health -= amount
-	print("Player received Damage ",amount, " Health ",health)
+	#print("Player received Damage ",amount, " Health ",health)
 	
 	#Blink Sprite
 	modulate = Color.RED
@@ -184,6 +256,8 @@ func damage(amount: int) -> void:
 
 
 func death() -> void:
+	GameManager.end_game()
+	
 	if death_prefab:
 		var death_object = death_prefab.instantiate()
 		death_object.position = position
@@ -197,3 +271,8 @@ func heal(amount: int) -> int:
 	if health >= max_health:
 		health = max_health
 	return health
+
+
+func update_health_progress_bar() -> void:
+	health_progress_bar.max_value = max_health
+	health_progress_bar.value = health

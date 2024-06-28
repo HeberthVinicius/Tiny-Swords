@@ -1,7 +1,8 @@
-[gd_scene load_steps=13 format=3 uid="uid://b7l4s78624oad"]
+[gd_scene load_steps=14 format=3 uid="uid://b7l4s78624oad"]
 
 [ext_resource type="Script" path="res://enemies/enemy.gd" id="1_7vp4d"]
 [ext_resource type="PackedScene" uid="uid://dakwtduwu5n6n" path="res://common/skull.tscn" id="2_evwb7"]
+[ext_resource type="PackedScene" uid="uid://cetnylnxiacdi" path="res://common/meat.tscn" id="3_j88oy"]
 [ext_resource type="Texture2D" uid="uid://davy8xv6y5u8h" path="res://addons/Tiny Swords/Resources/Sheep/HappySheep_Bouncing.png" id="3_khc07"]
 [ext_resource type="Script" path="res://enemies/behaviors/follow_player.gd" id="4_7med8"]
 
@@ -55,28 +56,32 @@ animations = [{
 "speed": 10.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_a8wty"]
-radius = 19.0
-height = 48.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_nimpy"]
+radius = 22.0
 
 [node name="Sheep" type="CharacterBody2D" groups=["enemies"]]
 motion_mode = 1
 script = ExtResource("1_7vp4d")
 health = 1
 death_prefab = ExtResource("2_evwb7")
+drop_rate = 0.025
+drop_items = Array[PackedScene]([ExtResource("3_j88oy")])
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -17)
 sprite_frames = SubResource("SpriteFrames_goa66")
 animation = &"walking"
 autoplay = "walking"
-frame_progress = 0.595012
+frame_progress = 0.88311
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -20)
-rotation = 1.5708
-shape = SubResource("CapsuleShape2D_a8wty")
+position = Vector2(0, -24)
+rotation = 4.68938
+shape = SubResource("CircleShape2D_nimpy")
 
 [node name="FollowPlayer" type="Node" parent="."]
 script = ExtResource("4_7med8")
-speed = 1.8
+speed = 1.5
+
+[node name="DamageDigitMarker" type="Marker2D" parent="."]
+position = Vector2(0, -42)

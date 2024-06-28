@@ -10,8 +10,11 @@ func _ready() -> void:
 	animated_sprite = enemy.get_node("AnimatedSprite2D")
 
 func _physics_process(_delta: float) -> void:
+	if GameManager.is_game_over:
+		return
+
 	# Calc Direction
-	var player_position: Vector2 = GameManeger.player_position
+	var player_position: Vector2 = GameManager.player_position
 	var diference: Vector2 = player_position - enemy.position
 	var input_vector: Vector2 = diference.normalized()
 	

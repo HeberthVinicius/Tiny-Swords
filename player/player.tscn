@@ -1,13 +1,12 @@
-[gd_scene load_steps=18 format=3 uid="uid://safsvwu1geiu"]
+[gd_scene load_steps=20 format=3 uid="uid://safsvwu1geiu"]
 
 [ext_resource type="Script" path="res://player/player.gd" id="1_gajb5"]
 [ext_resource type="Texture2D" uid="uid://c7cw6s2n0y226" path="res://addons/Tiny Swords/Factions/Knights/Troops/Warrior/Blue/Warrior_Blue.png" id="1_sc0v5"]
 [ext_resource type="PackedScene" uid="uid://dakwtduwu5n6n" path="res://common/skull.tscn" id="2_382tt"]
 [ext_resource type="PackedScene" uid="uid://bnrcv4twcsycs" path="res://player/spells/spell.tscn" id="2_ksji2"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_u56ja"]
-radius = 10.2041
-height = 34.6939
+[sub_resource type="CircleShape2D" id="CircleShape2D_hic2c"]
+radius = 7.14286
 
 [sub_resource type="Animation" id="Animation_6rxi4"]
 length = 0.001
@@ -145,6 +144,20 @@ tracks/0/keys = {
 "update": 1,
 "values": [Vector2i(0, 6), Vector2i(1, 6), Vector2i(2, 6), Vector2i(3, 6), Vector2i(4, 6), Vector2i(5, 6)]
 }
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.3),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"deal_demage_to_enemies"
+}]
+}
 
 [sub_resource type="Animation" id="Animation_1md4v"]
 resource_name = "attack_up_2"
@@ -159,6 +172,20 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [Vector2i(0, 7), Vector2i(1, 7), Vector2i(2, 7), Vector2i(3, 7), Vector2i(4, 7), Vector2i(5, 7)]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.3),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"deal_demage_to_enemies"
+}]
 }
 
 [sub_resource type="Animation" id="Animation_44h2g"]
@@ -214,6 +241,12 @@ radius = 101.005
 [sub_resource type="CircleShape2D" id="CircleShape2D_p15fs"]
 radius = 36.1248
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i0u2n"]
+bg_color = Color(0.776471, 0, 0.12549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n55ms"]
+bg_color = Color(3.08037e-06, 0.728287, 0.037072, 1)
+
 [node name="Player" type="CharacterBody2D" groups=["player"]]
 motion_mode = 1
 script = ExtResource("1_gajb5")
@@ -222,15 +255,15 @@ spell_prefab = ExtResource("2_ksji2")
 death_prefab = ExtResource("2_382tt")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, -33)
+position = Vector2(0, -28)
 texture = ExtResource("1_sc0v5")
 hframes = 6
 vframes = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -35)
+position = Vector2(0, -4)
 scale = Vector2(1.96, 1.96)
-shape = SubResource("CapsuleShape2D_u56ja")
+shape = SubResource("CircleShape2D_hic2c")
 debug_color = Color(0, 0.627451, 0.733333, 0.254902)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
@@ -242,13 +275,25 @@ autoplay = "idle"
 [node name="SwordArea" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="SwordArea"]
-position = Vector2(0, -30)
+visible = false
+position = Vector2(0, -28)
 shape = SubResource("CircleShape2D_cwila")
 debug_color = Color(1.58831e-06, 0.641202, 0.338059, 0.42)
 
 [node name="HitBoxArea" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitBoxArea"]
-position = Vector2(0, -36)
+visible = false
+position = Vector2(0, -32)
 shape = SubResource("CircleShape2D_p15fs")
 debug_color = Color(0.998767, 0, 0.133186, 0.42)
+
+[node name="HealthProgressBar" type="ProgressBar" parent="."]
+offset_left = -25.0
+offset_top = -100.0
+offset_right = 25.0
+offset_bottom = -94.0
+theme_override_styles/background = SubResource("StyleBoxFlat_i0u2n")
+theme_override_styles/fill = SubResource("StyleBoxFlat_n55ms")
+value = 50.0
+show_percentage = false
